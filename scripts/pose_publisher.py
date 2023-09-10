@@ -18,8 +18,17 @@ def move_arm_to_poses():
     poses = [
         Pose(position=Point(x=0.4, y=0.2, z=0.6), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
         Pose(position=Point(x=0.5, y=0.2, z=0.6), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
+        Pose(position=Point(x=0.3, y=0.1, z=0.5), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
+        Pose(position=Point(x=0.5, y=0.3, z=0.7), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
+        Pose(position=Point(x=0.6, y=0.2, z=0.8), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
+        Pose(position=Point(x=0.7, y=0.1, z=0.6), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
+        Pose(position=Point(x=0.4, y=0.4, z=0.7), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
+        Pose(position=Point(x=0.3, y=0.3, z=0.6), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
+        Pose(position=Point(x=0.5, y=0.1, z=0.5), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
+        Pose(position=Point(x=0.6, y=0.3, z=0.6), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
         # Add more poses here
     ]
+
 
     for target_pose in poses:
         try:
