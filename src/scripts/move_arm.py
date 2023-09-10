@@ -1,43 +1,56 @@
 #!/usr/bin/env python
-import sys
-import rospy
-import moveit_commander
-from geometry_msgs.msg import Pose
 
-def move_to_pose(target_pose):
-    # Initialize moveit_commander and rospy node
-    moveit_commander.roscpp_initialize(sys.argv)
-    rospy.init_node('move_arm_to_pose', anonymous=True)
-    
-    # Initialize the MoveGroup for the arm
-    arm_group = moveit_commander.MoveGroupCommander("arm")
-    
-    # Set the target pose
-    arm_group.set_pose_target(target_pose)
-    
-    # Plan the trajectory
-    plan = arm_group.plan()
-    
-    # Execute the trajectory
-    arm_group.execute(plan, wait=True)
-    
-    # Stop and delete all remaining goals (not strictly necessary, but good practice)
-    arm_group.stop()
-    arm_group.clear_pose_targets()
+import rospy
+from moveit_msgs.msg import MoveItErrorCodes
+from moveit_python import MoveGroupInterface, PlanningSceneInterface
+from geometry_msgs.msg import PoseStamped, Pose, Point, Quaternion
+
+# Callback function to set target pose
+def set_target_pose(msg):
+    global target_pose
+    target_pose = msg
+
+# Initialize target pose variable
+target_pose = None
 
 if __name__ == '__main__':
-    try:
-        # Create a Pose object with the target coordinates and orientation
-        target_pose = Pose()
-        target_pose.position.x = 0.5
-        target_pose.position.y = 0.0
-        target_pose.position.z = 0.5
-        target_pose.orientation.x = 0.0
-        target_pose.orientation.y = 0.0
-        target_pose.orientation.z = 0.0
-        target_pose.orientation.w = 1.0
-        
-        move_to_pose(target_pose)
-        
-    except rospy.ROSInterruptException:
-        pass
+    rospy.init_node("move_to_target_pose")
+
+    # Create move group interface for a fetch robot
+    move_group = MoveGroupInterface("arm_with_torso", "base_link")
+
+    # Initialize PlanningScene
+    planning_scene = PlanningSceneInterface("base_link")
+
+    # Initialize the PoseStamped message
+    gripper_pose_stamped = PoseStamped()
+    gripper_pose_stamped.header.frame_id = 'base_link'
+
+    # Subscribe to the Pose message topic
+    rospy.Subscriber("/target_pose", Pose, set_target_pose)
+
+    while not rospy.is_shutdown():
+        if target_pose is not None:
+            # Set the current time stamp
+            gripper_pose_stamped.header.stamp = rospy.Time.now()
+            
+            # Set the target pose
+            gripper_pose_stamped.pose = target_pose
+
+            # Move the robot arm to the target pose
+            move_group.moveToPose(gripper_pose_stamped, "wrist_roll_link")
+            result = move_group.get_move_action().get_result()
+
+            if result:
+                if result.error_code.val == MoveItErrorCodes.SUCCESS:
+                    rospy.loginfo("Moved to target pose!")
+                else:
+                    rospy.logerr("Arm goal in state: %s", move_group.get_move_action().get_state())
+            else:
+                rospy.logerr("MoveIt! failure no result returned.")
+
+            # Reset target pose
+            target_pose = None
+
+    # Cancel all movement goals (optional)
+    move_group.get_move_action().cancel_all_goals()
