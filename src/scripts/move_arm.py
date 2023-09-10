@@ -16,6 +16,9 @@ target_pose = None
 if __name__ == '__main__':
     rospy.init_node("move_to_target_pose")
 
+    # Initialize moving flag
+    moving = False
+
     # Create move group interface for a fetch robot
     move_group = MoveGroupInterface("arm_with_torso", "base_link")
 
@@ -30,7 +33,8 @@ if __name__ == '__main__':
     rospy.Subscriber("/target_pose", Pose, set_target_pose)
 
     while not rospy.is_shutdown():
-        if target_pose is not None:
+        if (target_pose is not None) and (not moving):
+            moving = True
             # Set the current time stamp
             gripper_pose_stamped.header.stamp = rospy.Time.now()
             
@@ -44,6 +48,7 @@ if __name__ == '__main__':
             if result:
                 if result.error_code.val == MoveItErrorCodes.SUCCESS:
                     rospy.loginfo("Moved to target pose!")
+                    moving = False
                 else:
                     rospy.logerr("Arm goal in state: %s", move_group.get_move_action().get_state())
             else:
