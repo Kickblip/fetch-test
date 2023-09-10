@@ -69,11 +69,12 @@ add_service_files(
 #   Action2.action
 # )
 
-## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+# Generate added messages and services with any dependencies listed here
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+  geometry_msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -107,7 +108,7 @@ add_service_files(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES fetch_test
-#  CATKIN_DEPENDS roscpp rospy std_msgs moveit_commander geometry_msgs
+  CATKIN_DEPENDS roscpp rospy std_msgs moveit_commander geometry_msgs message_runtime
 #  DEPENDS system_lib
 )
 
