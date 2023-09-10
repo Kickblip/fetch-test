@@ -1,55 +1,45 @@
 #!/usr/bin/env python
 
 import rospy
+from fetch_test.srv import MoveToPose
 from geometry_msgs.msg import Pose
-import random
 
-def pose_publisher():
+def move_arm_to_poses():
     # Initialize the node
     rospy.init_node('pose_publisher_node', anonymous=True)
 
-    # Create a Publisher object, specify the topic name, message type, and queue size
-    pub = rospy.Publisher('/target_pose', Pose, queue_size=10)
+    # Wait for the move_to_pose service to become available
+    rospy.wait_for_service('move_to_pose')
+    
+    # Create a ServiceProxy object
+    move_to_pose = rospy.ServiceProxy('move_to_pose', MoveToPose)
 
-    # Set the rate of publishing (in Hz)
-    rate = rospy.Rate(1)
+    # List of target poses
+    poses = [
+        Pose(position=Point(x=0.4, y=0.2, z=0.6), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
+        Pose(position=Point(x=0.5, y=0.2, z=0.6), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
+        # Add more poses here
+    ]
 
-    while not rospy.is_shutdown():
-        # Create a Pose message object
-        target_pose = Pose()
+    for target_pose in poses:
+        try:
+            # Call the move_to_pose service and wait for it to complete
+            response = move_to_pose(target_pose)
 
-        # Set random position within some reasonable bounds (modify as needed)
-        target_pose.position.x = random.uniform(0.1, 0.5)
-        target_pose.position.y = random.uniform(-0.2, 0.2)
-        target_pose.position.z = random.uniform(0.1, 0.5)
+            # Check if the move was successful (replace with your actual condition)
+            if response.success:
+                rospy.loginfo("Successfully moved to pose: %s", target_pose)
+            else:
+                rospy.logwarn("Failed to move to pose: %s", target_pose)
 
-        # Set random orientation (quaternion values; modify as needed)
-        target_pose.orientation.x = random.uniform(0, 1)
-        target_pose.orientation.y = random.uniform(0, 1)
-        target_pose.orientation.z = random.uniform(0, 1)
-        target_pose.orientation.w = random.uniform(0, 1)
+        except rospy.ServiceException as e:
+            rospy.logerr("Service call failed: %s", e)
 
-        # Normalize the quaternion (to make it a valid orientation)
-        norm_factor = (target_pose.orientation.x ** 2 + 
-                       target_pose.orientation.y ** 2 + 
-                       target_pose.orientation.z ** 2 + 
-                       target_pose.orientation.w ** 2) ** 0.5
-        target_pose.orientation.x /= norm_factor
-        target_pose.orientation.y /= norm_factor
-        target_pose.orientation.z /= norm_factor
-        target_pose.orientation.w /= norm_factor
-
-        # Publish the Pose message
-        pub.publish(target_pose)
-
-        # Log the publishing
-        rospy.loginfo("Published target pose: %s", target_pose)
-
-        # Sleep to maintain the rate
-        rate.sleep()
+        # Add some delay between poses (optional)
+        rospy.sleep(2)
 
 if __name__ == '__main__':
     try:
-        pose_publisher()
+        move_arm_to_poses()
     except rospy.ROSInterruptException:
         pass
