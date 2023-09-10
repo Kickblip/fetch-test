@@ -2,7 +2,7 @@
 
 import rospy
 from fetch_test.srv import MoveToPose
-from geometry_msgs.msg import Pose
+from geometry_msgs.msg import Pose, Point, Quaternion
 
 def move_arm_to_poses():
     # Initialize the node
