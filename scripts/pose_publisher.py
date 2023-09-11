@@ -16,17 +16,16 @@ def move_arm_to_poses():
 
     # List of target poses
     poses = [
-        Pose(position=Point(x=0.4, y=0.2, z=0.6), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
-        Pose(position=Point(x=0.5, y=0.2, z=0.6), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
-        Pose(position=Point(x=0.3, y=0.1, z=0.5), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
-        Pose(position=Point(x=0.5, y=0.3, z=0.7), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
-        Pose(position=Point(x=0.6, y=0.2, z=0.8), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
-        Pose(position=Point(x=0.7, y=0.1, z=0.6), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
-        Pose(position=Point(x=0.4, y=0.4, z=0.7), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
-        Pose(position=Point(x=0.3, y=0.3, z=0.6), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
-        Pose(position=Point(x=0.5, y=0.1, z=0.5), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
-        Pose(position=Point(x=0.6, y=0.3, z=0.6), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
-        # Add more poses here
+        Pose(position=Point(x=0.35, y=0.25, z=0.65), orientation=Quaternion(x=0.1, y=0.0, z=0.0, w=1.0)),
+        Pose(position=Point(x=0.52, y=0.18, z=0.59), orientation=Quaternion(x=0.0, y=0.1, z=0.0, w=1.0)),
+        Pose(position=Point(x=0.29, y=0.12, z=0.55), orientation=Quaternion(x=0.0, y=0.0, z=0.1, w=1.0)),
+        Pose(position=Point(x=0.48, y=0.32, z=0.73), orientation=Quaternion(x=0.1, y=0.1, z=0.0, w=1.0)),
+        Pose(position=Point(x=0.63, y=0.24, z=0.81), orientation=Quaternion(x=0.0, y=0.1, z=0.1, w=1.0)),
+        Pose(position=Point(x=0.71, y=0.08, z=0.64), orientation=Quaternion(x=0.1, y=0.0, z=0.1, w=1.0)),
+        Pose(position=Point(x=0.39, y=0.42, z=0.75), orientation=Quaternion(x=0.1, y=0.1, z=0.1, w=1.0)),
+        Pose(position=Point(x=0.34, y=0.27, z=0.62), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
+        Pose(position=Point(x=0.52, y=0.09, z=0.53), orientation=Quaternion(x=0.1, y=0.0, z=0.0, w=1.0)),
+        Pose(position=Point(x=0.58, y=0.35, z=0.63), orientation=Quaternion(x=0.0, y=0.1, z=0.0, w=1.0))
     ]
 
 
