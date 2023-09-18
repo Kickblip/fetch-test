@@ -26,7 +26,7 @@ def handle_move_to_pose(req):
     
     try:
         # Look up the transformation between base_link and camera_frame
-        (trans, rot) = listener.lookupTransform('base_link', 'camera_frame', rospy.Time(0))
+        (trans, rot) = listener.lookupTransform('base_link', 'head_camera_link', rospy.Time(0))
     except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
         rospy.logerr("Failed to fetch transformation")
         res.success = False
@@ -36,7 +36,7 @@ def handle_move_to_pose(req):
     pose_in_camera_frame = req.target_pose
     
     # Transform pose from camera_frame to base_link
-    pose_in_camera_frame.header.frame_id = 'camera_frame'
+    pose_in_camera_frame.header.frame_id = 'head_camera_link'
     pose_in_base_link = listener.transformPose('base_link', pose_in_camera_frame)
     
     # Set the current timestamp
