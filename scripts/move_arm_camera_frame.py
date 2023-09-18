@@ -24,26 +24,22 @@ def handle_move_to_pose(req):
     # Wait for TF to initialize
     rospy.sleep(2)
     
+    # Create a PoseStamped message to fake the arm in a base frame to convert
+    pose_in_base_link = PoseStamped()
+    pose_in_base_link.pose = req.target_pose
+    pose_in_base_link.header.frame_id = 'base_link'
+    pose_in_base_link.header.stamp = rospy.Time.now()
+
     try:
-        # Look up the transformation between base_link and camera_frame
-        (trans, rot) = listener.lookupTransform('base_link', 'head_camera_link', rospy.Time(0))
+        # Transform the pose from base_link to head_camera_link
+        pose_in_camera_link = listener.transformPose('head_camera_link', pose_in_base_link)
     except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-        rospy.logerr("Failed to fetch transformation")
+        rospy.logerr("Failed to transform pose from base_link to head_camera_link")
         res.success = False
         return res
-
-    # Initialize the PoseStamped message in camera frame
-    pose_in_camera_frame = req.target_pose
-    
-    # Transform pose from camera_frame to base_link
-    pose_in_camera_frame.header.frame_id = 'head_camera_link'
-    pose_in_base_link = listener.transformPose('base_link', pose_in_camera_frame)
-    
-    # Set the current timestamp
-    pose_in_base_link.header.stamp = rospy.Time.now()
     
     # Move the robot arm to the target pose
-    move_group.moveToPose(pose_in_base_link, "wrist_roll_link")
+    move_group.moveToPose(pose_in_camera_link, "wrist_roll_link")
     result = move_group.get_move_action().get_result()
     
     if result:
@@ -56,15 +52,5 @@ def handle_move_to_pose(req):
     else:
         rospy.logerr("MoveIt! failure no result returned.")
         res.success = False
-        
-
 
     return res
-
-if __name__ == '__main__':
-    rospy.init_node("move_to_target_pose_service")
-
-    # Initialize the service
-    s = rospy.Service('move_to_pose', MoveToPose, handle_move_to_pose)
-
-    rospy.spin()
