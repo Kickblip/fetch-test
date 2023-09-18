@@ -4,7 +4,7 @@ import rospy
 from fetch_test.srv import MoveToPose
 from geometry_msgs.msg import Pose, PoseStamped, Point, Quaternion
 
-def move_arm_to_poses():
+def send_poses():
     # Initialize the node
     rospy.init_node('pose_publisher_node', anonymous=True)
 
@@ -68,6 +68,6 @@ def move_arm_to_poses():
 
 if __name__ == '__main__':
     try:
-        move_arm_to_poses()
+        send_poses()
     except rospy.ROSInterruptException:
         pass
