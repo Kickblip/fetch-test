@@ -3,7 +3,6 @@
 import rospy
 from moveit_msgs.msg import MoveItErrorCodes
 from moveit_python import MoveGroupInterface, PlanningSceneInterface
-from geometry_msgs.msg import PoseStamped
 from fetch_test.srv import MoveToPose, MoveToPoseResponse
 
 def handle_move_to_pose(req):
@@ -16,16 +15,9 @@ def handle_move_to_pose(req):
     
     # Initialize PlanningScene
     planning_scene = PlanningSceneInterface("base_link")
-    
-    # Initialize the PoseStamped message
-    gripper_pose_stamped = PoseStamped()
-    gripper_pose_stamped.header.frame_id = 'base_link'
-    
-    # Set the current timestamp
-    gripper_pose_stamped.header.stamp = rospy.Time.now()
-    
-    # Set the target pose
-    gripper_pose_stamped.pose = req.target_pose
+
+    # Use the target pose directly from the request
+    gripper_pose_stamped = req.target_pose
     
     # Move the robot arm to the target pose
     move_group.moveToPose(gripper_pose_stamped, "wrist_roll_link")

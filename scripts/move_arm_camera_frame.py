@@ -13,26 +13,26 @@ def handle_move_to_pose(req):
     res = MoveToPoseResponse()
     
     # Create move group interface for a fetch robot
-    move_group = MoveGroupInterface("arm_with_torso", "base_link")
+    move_group = MoveGroupInterface("arm_with_torso", "head_camera_link")
     
     # Initialize PlanningScene
-    planning_scene = PlanningSceneInterface("base_link")
+    planning_scene = PlanningSceneInterface("head_camera_link")
     
     # Initialize TF listener
     listener = tf.TransformListener()
 
     # Wait for TF to initialize
     rospy.sleep(2)
-    
-    # Create a PoseStamped message to fake the arm in a base frame to convert
-    pose_in_base_link = PoseStamped()
-    pose_in_base_link.pose = req.target_pose
-    pose_in_base_link.header.frame_id = 'base_link'
-    pose_in_base_link.header.stamp = rospy.Time.now()
 
+    # Ensure that the request pose is in 'base_link'
+    if req.target_pose.header.frame_id != 'base_link':
+        rospy.logerr("Received pose is not in 'base_link'")
+        res.success = False
+        return res
+    
     try:
         # Transform the pose from base_link to head_camera_link
-        pose_in_camera_link = listener.transformPose('head_camera_link', pose_in_base_link)
+        pose_in_camera_link = listener.transformPose('head_camera_link', req.target_pose)
     except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
         rospy.logerr("Failed to transform pose from base_link to head_camera_link")
         res.success = False
@@ -54,3 +54,4 @@ def handle_move_to_pose(req):
         res.success = False
 
     return res
+
