@@ -1,4 +1,4 @@
 <launch>
   <!-- Node to spawn a model into Gazebo -->
-  <node name="spawn_ar_tag" pkg="gazebo_ros" type="spawn_model" args="-file $(find fetch_test)/ar_tags/models/model.sdf -sdf -model my_ar_tag" />
+  <node name="spawn_ar_tag" pkg="gazebo_ros" type="spawn_model" args="-file $(find fetch_test)/ar_tags/models/model.sdf -sdf -x 2 -y 2 -z 0.5 -model my_ar_tag" />
 </launch>

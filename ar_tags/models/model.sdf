@@ -15,7 +15,7 @@
             <name>Gazebo/White</name>
           </script>
           <texture>
-            <diffuse>file://../images/MarkerData_1234.png</diffuse>
+            <diffuse>file:///Downloads/MarkerData_1234.png</diffuse>
           </texture>
         </material>
       </visual>
