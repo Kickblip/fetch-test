@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import rospy
 from sensor_msgs.msg import Image
+from ar_track_alvar_msgs.msg import AlvarMarkers
 from cv_bridge import CvBridge, CvBridgeError
 import cv2
 
@@ -21,12 +22,22 @@ def image_callback(img_msg):
     cv2.imshow("Image Window", cv_image)
     cv2.waitKey(3)
 
+# Callback function for AR marker detection
+def ar_marker_callback(marker_msg):
+    for marker in marker_msg.markers:
+        if marker.id == 1234:
+            print("AR Tag with ID 1234 detected.")
+            # Move robot arm
+
 # Initialize the ROS node
 rospy.init_node('image_viewer', anonymous=True)
 
 # Subscribe to the 'head_camera/rgb/image_raw' topic
 image_topic = "/head_camera/rgb/image_raw"
 rospy.Subscriber(image_topic, Image, image_callback)
+
+# Subscribe to the '/ar_pose_marker' topic to receive AR tag poses
+rospy.Subscriber("/ar_pose_marker", AlvarMarkers, ar_marker_callback)
 
 # Keep the program running
 rospy.spin()

@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   moveit_commander
   sensor_msgs
+  ar_track_alvar_msgs
   cv_bridge
   tf
 )
@@ -111,7 +112,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES fetch_test
-  CATKIN_DEPENDS roscpp rospy std_msgs moveit_commander geometry_msgs message_runtime tf
+  CATKIN_DEPENDS roscpp rospy std_msgs moveit_commander geometry_msgs message_runtime tf ar_track_alvar_msgs sensor_msgs cv_bridge
 #  DEPENDS system_lib
 )
 
