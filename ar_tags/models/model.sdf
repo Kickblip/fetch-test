@@ -14,9 +14,10 @@
             <uri>file://media/materials/textures</uri>
             <name>Gazebo/White</name>
           </script>
-          <texture>
-            <diffuse>file:///Downloads/MarkerData_1234.png</diffuse>
-          </texture>
+          <gazebo>
+            <material>Gazebo/White</material>
+            <texture>file:///Downloads/MarkerData_1234.png</texture>
+          </gazebo>
         </material>
       </visual>
     </link>
