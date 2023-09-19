@@ -3,7 +3,6 @@
 import rospy
 from moveit_msgs.msg import MoveItErrorCodes
 from moveit_python import MoveGroupInterface, PlanningSceneInterface
-from geometry_msgs.msg import PoseStamped
 from fetch_test.srv import MoveToPose, MoveToPoseResponse
 import tf
 
@@ -55,3 +54,10 @@ def handle_move_to_pose(req):
 
     return res
 
+if __name__ == '__main__':
+    rospy.init_node("move_to_target_pose_service")
+
+    # Initialize the service
+    s = rospy.Service('move_to_pose', MoveToPose, handle_move_to_pose)
+
+    rospy.spin()
