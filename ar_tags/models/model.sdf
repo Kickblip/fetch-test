@@ -10,14 +10,8 @@
         </geometry>
         <material>
           <script>
-            <uri>file://media/materials/scripts</uri>
-            <uri>file://media/materials/textures</uri>
             <name>Gazebo/White</name>
           </script>
-          <gazebo>
-            <material>Gazebo/White</material>
-            <texture>file:///Downloads/MarkerData_1234.png</texture>
-          </gazebo>
         </material>
       </visual>
     </link>
