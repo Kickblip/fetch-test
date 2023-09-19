@@ -3,8 +3,9 @@
 import rospy
 from fetch_test.srv import MoveToPose
 from geometry_msgs.msg import Pose, PoseStamped, Point, Quaternion
+from std_msgs.msg import Header
 
-def send_poses():
+def move_arm_to_poses():
     # Initialize the node
     rospy.init_node('pose_publisher_node', anonymous=True)
 
@@ -18,34 +19,34 @@ def send_poses():
     poses = [
         PoseStamped(
             pose=Pose(position=Point(x=0.35, y=0.25, z=0.65), orientation=Quaternion(x=0.1, y=0.0, z=0.0, w=1.0)),
-            header={'frame_id': 'base_link'}),
+            header=Header(frame_id='base_link')),
         PoseStamped(
             pose=Pose(position=Point(x=0.52, y=0.18, z=0.59), orientation=Quaternion(x=0.0, y=0.1, z=0.0, w=1.0)),
-            header={'frame_id': 'base_link'}),
+            header=Header(frame_id='base_link')),
         PoseStamped(
             pose=Pose(position=Point(x=0.29, y=0.12, z=0.55), orientation=Quaternion(x=0.0, y=0.0, z=0.1, w=1.0)),
-            header={'frame_id': 'base_link'}),
+            header=Header(frame_id='base_link')),
         PoseStamped(
             pose=Pose(position=Point(x=0.48, y=0.32, z=0.73), orientation=Quaternion(x=0.1, y=0.1, z=0.0, w=1.0)),
-            header={'frame_id': 'base_link'}),
+            header=Header(frame_id='base_link')),
         PoseStamped(
             pose=Pose(position=Point(x=0.63, y=0.24, z=0.81), orientation=Quaternion(x=0.0, y=0.1, z=0.1, w=1.0)),
-            header={'frame_id': 'base_link'}),
+            header=Header(frame_id='base_link')),
         PoseStamped(
             pose=Pose(position=Point(x=0.71, y=0.08, z=0.64), orientation=Quaternion(x=0.1, y=0.0, z=0.1, w=1.0)),
-            header={'frame_id': 'base_link'}),
+            header=Header(frame_id='base_link')),
         PoseStamped(
             pose=Pose(position=Point(x=0.39, y=0.42, z=0.75), orientation=Quaternion(x=0.1, y=0.1, z=0.1, w=1.0)),
-            header={'frame_id': 'base_link'}),
+            header=Header(frame_id='base_link')),
         PoseStamped(
             pose=Pose(position=Point(x=0.34, y=0.27, z=0.62), orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)),
-            header={'frame_id': 'base_link'}),
+            header=Header(frame_id='base_link')),
         PoseStamped(
             pose=Pose(position=Point(x=0.52, y=0.09, z=0.53), orientation=Quaternion(x=0.1, y=0.0, z=0.0, w=1.0)),
-            header={'frame_id': 'base_link'}),
+            header=Header(frame_id='base_link')),
         PoseStamped(
             pose=Pose(position=Point(x=0.58, y=0.35, z=0.63), orientation=Quaternion(x=0.0, y=0.1, z=0.0, w=1.0)),
-            header={'frame_id': 'base_link'})
+            header=Header(frame_id='base_link'))
     ]
 
 
@@ -68,6 +69,6 @@ def send_poses():
 
 if __name__ == '__main__':
     try:
-        send_poses()
+        move_arm_to_poses()
     except rospy.ROSInterruptException:
         pass
