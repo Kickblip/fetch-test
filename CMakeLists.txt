@@ -14,6 +14,8 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   message_generation
   moveit_commander
+  sensor_msgs
+  cv_bridge
   tf
 )
 
@@ -164,7 +166,7 @@ include_directories(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
-  scripts/move_arm_base_frame.py scripts/pose_publisher.py scripts/move_arm_camera_frame.py
+  scripts/moving-arm/move_arm_base_frame.py scripts/moving-arm/pose_publisher.py scripts/moving-arm/move_arm_camera_frame.py scripts/camera-arm/detect_ar_marker.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
