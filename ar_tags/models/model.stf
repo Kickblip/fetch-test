@@ -1,0 +1,24 @@
+<?xml version='1.0'?>
+<sdf version='1.6'>
+  <model name='my_ar_tag'>
+    <link name='link'>
+      <visual name='visual'>
+        <geometry>
+          <box>
+            <size>1 1 0.01</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts</uri>
+            <uri>file://media/materials/textures</uri>
+            <name>Gazebo/White</name>
+          </script>
+          <texture>
+            <diffuse>file://../images/MarkerData_1234.png</diffuse>
+          </texture>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>
