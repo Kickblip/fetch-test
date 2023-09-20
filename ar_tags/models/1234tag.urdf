@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<robot name="my_ar_tag">
+  <link name="link">
+    <visual>
+      <geometry>
+        <mesh filename="file://./1234tag.dae" scale="1 1 1"/>
+      </geometry>
+      <material name="white">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- Define the world link and joint -->
+  <link name="world"/>
+
+  <joint name="world_to_link" type="fixed">
+    <parent link="world"/>
+    <child link="link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+</robot>
