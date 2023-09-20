@@ -6,9 +6,19 @@
         <mesh filename="file:///home/catkin_ws/src/fetch-test/ar_tags/models/1234tag.dae" scale="1 1 1"/>
       </geometry>
     </visual>
+    <collision>
+      <geometry>
+        <mesh filename="file:///home/catkin_ws/src/fetch-test/ar_tags/models/1234tag.dae" scale="1 1 1"/>
+      </geometry>
+    </collision>
   </link>
-
-  <!-- Define the world link and joint -->
+  
+  <gazebo>
+    <link name="base_link">
+      <static>true</static>
+    </link>
+  </gazebo>
+  
   <link name="world"/>
 
   <joint name="world_to_base_link" type="fixed">
