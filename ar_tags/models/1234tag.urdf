@@ -1,13 +1,10 @@
 <?xml version="1.0"?>
-<robot name="simple_box">
-  <link name="base_link">
+<robot name="my_ar_tag">
+  <link name="link">
     <visual>
       <geometry>
-        <box size="1 1 1"/>
+        <mesh filename="package://ar_tags/models/1234tag.dae" scale="1 1 1"/>
       </geometry>
-      <material name="blue">
-        <color rgba="0 0 1 1"/>
-      </material>
     </visual>
   </link>
 
