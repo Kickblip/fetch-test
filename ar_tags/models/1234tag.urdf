@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <robot name="my_ar_tag">
-  <link name="link">
+  <link name="base_link">
     <visual>
       <geometry>
         <mesh filename="file:///home/catkin_ws/src/fetch-test/ar_tags/models/1234tag.dae" scale="1 1 1"/>
