@@ -3,7 +3,7 @@
   <link name="link">
     <visual>
       <geometry>
-        <mesh filename="package://ar_tags/models/1234tag.dae" scale="1 1 1"/>
+        <mesh filename="package://fetch_test/ar_tags/models/1234tag.dae" scale="1 1 1"/>
       </geometry>
     </visual>
   </link>
