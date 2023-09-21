@@ -1,7 +1,0 @@
-<launch>
-  <!-- Load the URDF into the ROS Parameter Server -->
-  <param name="robot_description" textfile="$(find fetch_test)/ar_tags/models/1234tag.urdf"/>
-
-  <!-- Node to spawn a model into Gazebo -->
-  <node name="spawn_ar_tag" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -x 0 -y 0 -z 0.5 -model my_ar_tag" />
-</launch>
