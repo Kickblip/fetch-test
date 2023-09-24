@@ -1,0 +1,19 @@
+<?xml version='1.0'?>
+<sdf version='1.4'>
+  <model name="1234_tag">
+    <static>true</static>
+    <pose>0 0 0 0 0 0</pose>
+
+    <link name="1234_tag">
+      <pose>0 0 0.02 0 0 0</pose>
+      <visual name="mat">
+        <geometry>
+          <mesh>
+            <uri>model://1234tag/1234tag.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+
+  </model>
+</sdf>
