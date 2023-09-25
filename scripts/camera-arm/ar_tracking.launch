@@ -1,0 +1,9 @@
+<launch>
+    <node name="ar_track_alvar" pkg="ar_track_alvar" type="individualMarkers" respawn="false" output="screen">
+        <param name="marker_size" type="double" value="0.08"/>
+        <param name="max_new_marker_error" type="double" value="0.08"/>
+        <param name="max_track_error" type="double" value="0.2"/>
+        <param name="cam_image_topic" type="string" value="/head_camera/rgb/image_raw"/>
+        <param name="output_frame" type="string" value="camera_link"/>
+    </node>
+</launch>

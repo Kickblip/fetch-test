@@ -25,19 +25,22 @@ def image_callback(img_msg):
 # Callback function for AR marker detection
 def ar_marker_callback(marker_msg):
     for marker in marker_msg.markers:
+        print(f"AR Tag with ID {marker.id} detected.")
+
         if marker.id == 1234:
-            print("AR Tag with ID 1234 detected.")
+            print("Specific AR Tag with ID 1234 detected.")
             # Move robot arm
 
 # Initialize the ROS node
-rospy.init_node('image_viewer', anonymous=True)
+rospy.init_node('ar_marker_detector', anonymous=True)
 
 # Subscribe to the 'head_camera/rgb/image_raw' topic
 image_topic = "/head_camera/rgb/image_raw"
 rospy.Subscriber(image_topic, Image, image_callback)
 
-# Subscribe to the '/ar_pose_marker' topic to receive AR tag poses
-rospy.Subscriber("/ar_pose_marker", AlvarMarkers, ar_marker_callback)
+# Subscribe to the 'ar_pose_marker' topic 
+ar_marker_topic = "/ar_pose_marker"
+rospy.Subscriber(ar_marker_topic, AlvarMarkers, ar_marker_callback)
 
 # Keep the program running
 rospy.spin()
