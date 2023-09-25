@@ -9,6 +9,8 @@ import cv2
 bridge = CvBridge()
 
 # Callback function for the subscribed topic
+
+
 def image_callback(img_msg):
     global bridge
     try:
@@ -23,13 +25,16 @@ def image_callback(img_msg):
     cv2.waitKey(3)
 
 # Callback function for AR marker detection
+
+
 def ar_marker_callback(marker_msg):
     for marker in marker_msg.markers:
-        print(f"AR Tag with ID {marker.id} detected.")
+        print("AR Tag with ID ", {marker.id}, " detected.")
 
         if marker.id == 1234:
             print("Specific AR Tag with ID 1234 detected.")
             # Move robot arm
+
 
 # Initialize the ROS node
 rospy.init_node('ar_marker_detector', anonymous=True)
@@ -38,7 +43,7 @@ rospy.init_node('ar_marker_detector', anonymous=True)
 image_topic = "/head_camera/rgb/image_raw"
 rospy.Subscriber(image_topic, Image, image_callback)
 
-# Subscribe to the 'ar_pose_marker' topic 
+# Subscribe to the 'ar_pose_marker' topic
 ar_marker_topic = "/ar_pose_marker"
 rospy.Subscriber(ar_marker_topic, AlvarMarkers, ar_marker_callback)
 
