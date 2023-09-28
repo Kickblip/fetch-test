@@ -29,10 +29,10 @@ def image_callback(img_msg):
 
 def ar_marker_callback(marker_msg):
     for marker in marker_msg.markers:
-        print("AR Tag with ID ", {marker.id}, " detected.")
+        rospy.loginfo("AR Tag with ID %d detected.", marker.id)
 
         if marker.id == 1234:
-            print("Specific AR Tag with ID 1234 detected.")
+            rospy.loginfo("ID 1234 detected.")
             # Move robot arm
 
 
