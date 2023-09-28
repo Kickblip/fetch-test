@@ -1,9 +1,9 @@
 <launch>
-    <node name="ar_track_alvar" pkg="ar_track_alvar" type="individualMarkers" respawn="false" output="screen">
-        <param name="marker_size" type="double" value="9.0"/>
-        <param name="max_new_marker_error" type="double" value="0.08"/>
-        <param name="max_track_error" type="double" value="0.2"/>
-        <param name="cam_image_topic" type="string" value="/head_camera/rgb/image_raw"/>
-        <param name="output_frame" type="string" value="head_camera_link"/>
-    </node>
+	<arg name="cam_image_topic" default="/head_camera/rgb/image_raw" />
+
+	<node name="ar_track_alvar" pkg="ar_track_alvar" type="individualMarkersNoKinect" respawn="false" output="screen">
+		<rosparam command="load" file="$(find fetch_test)/scripts/camera-arm/alvar.yaml" />
+
+		<remap from="camera_image"  to="$(arg cam_image_topic)" />
+	</node>
 </launch>
