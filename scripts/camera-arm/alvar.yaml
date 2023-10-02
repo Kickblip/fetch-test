@@ -1,5 +1,0 @@
-marker_size: 9.0
-max_new_marker_error: 0.2 # from 0.08
-max_track_error: 0.5 # from 0.2
-max_frequency: 30.0 # from 8.0
-output_frame: head_camera_link
