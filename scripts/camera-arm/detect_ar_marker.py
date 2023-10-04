@@ -12,6 +12,7 @@ import cv2
 # Initialize the CvBridge class
 bridge = CvBridge()
 moving = False
+
 # Callback function for the subscribed topic
 
 
@@ -35,9 +36,7 @@ def ar_marker_callback(marker_msg):
     global moving
 
     for marker in marker_msg.markers:
-
         if (marker.id == 14) and (not moving):
-
             rospy.loginfo("AR marker detected!")
             moving = True
 
@@ -46,27 +45,25 @@ def ar_marker_callback(marker_msg):
                 pose=marker.pose.pose,
                 header=Header(frame_id=marker.header.frame_id))
 
-            # Create move group interface for a fetch robot
-            move_group = MoveGroupInterface(
-                "arm_with_torso", "base_link")
+            move_robot(gripper_pose_stamped)
 
-            # Initialize PlanningScene
-            planning_scene = PlanningSceneInterface("base_link")
 
-            # Move the robot arm to the target pose
-            move_group.moveToPose(gripper_pose_stamped, "wrist_roll_link")
-            result = move_group.get_move_action().get_result()
+def move_robot(target_pose):
+    # Initialize move_group interface
+    move_group = MoveGroupInterface("arm_with_torso", "base_link")
+    planning_scene = PlanningSceneInterface("base_link")
 
-            if result:
-                if result.error_code.val == MoveItErrorCodes.SUCCESS:
-                    rospy.loginfo("Moved to target pose!")
-                    moving = False
-                else:
-                    rospy.logerr("Arm goal in state: %s",
-                                 move_group.get_move_action().get_state())
-                    moving = False
-            else:
-                rospy.logerr("MoveIt failure no result returned.")
+    # Go to the target pose
+    result = move_group.moveToPose(target_pose, "gripper_link")
+    if result:
+        if result.error_code.val == MoveItErrorCodes.SUCCESS:
+            rospy.loginfo("Robot moved to target pose!")
+        else:
+            rospy.logwarn("Failed to move to target pose!")
+    else:
+        rospy.logwarn("MoveIt! did not return any result.")
+
+    move_group.get_move_action().cancel_all_goals()
 
 
 # Initialize the ROS node
