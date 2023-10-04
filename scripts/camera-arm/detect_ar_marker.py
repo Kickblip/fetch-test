@@ -33,6 +33,7 @@ def image_callback(img_msg):
 
 
 def ar_marker_callback(marker_msg):
+    global moving
 
     for marker in marker_msg.markers:
 
