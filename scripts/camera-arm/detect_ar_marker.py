@@ -2,10 +2,9 @@
 import rospy
 from sensor_msgs.msg import Image
 from ar_track_alvar_msgs.msg import AlvarMarkers
-from geometry_msgs.msg import Pose, PoseStamped, Point, Quaternion
+from geometry_msgs.msg import PoseStamped
 from std_msgs.msg import Header
 from cv_bridge import CvBridge, CvBridgeError
-from fetch_test.srv import MoveToPose
 from moveit_msgs.msg import MoveItErrorCodes
 from moveit_python import MoveGroupInterface, PlanningSceneInterface
 import cv2
