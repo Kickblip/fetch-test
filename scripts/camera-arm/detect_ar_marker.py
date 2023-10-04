@@ -67,7 +67,6 @@ def ar_marker_callback(marker_msg):
                     moving = False
             else:
                 rospy.logerr("MoveIt failure no result returned.")
-                moving = False
 
 
 # Initialize the ROS node
