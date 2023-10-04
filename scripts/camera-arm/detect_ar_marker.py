@@ -7,16 +7,11 @@ from std_msgs.msg import Header
 from cv_bridge import CvBridge, CvBridgeError
 from moveit_msgs.msg import MoveItErrorCodes
 from moveit_python import MoveGroupInterface, PlanningSceneInterface
-import tf
 import cv2
 
 # Initialize the CvBridge class
 bridge = CvBridge()
 moving = False
-
-# Initialize the ROS node
-rospy.init_node('ar_marker_detector', anonymous=True)
-
 # Callback function for the subscribed topic
 
 
@@ -33,23 +28,11 @@ def image_callback(img_msg):
     cv2.imshow("Image Window", cv_image)
     cv2.waitKey(3)
 
-
-# Create move group interface for a fetch robot
-move_group = MoveGroupInterface(
-    "arm_with_torso", "base_link")
-
-# Initialize PlanningScene
-planning_scene = PlanningSceneInterface("base_link")
-
-# Initialize TF listener
-listener = tf.TransformListener()
+# Callback function for AR marker detection
 
 
 def ar_marker_callback(marker_msg):
     global moving
-    global move_group
-    global planning_scene
-    global listener
 
     for marker in marker_msg.markers:
 
@@ -58,24 +41,20 @@ def ar_marker_callback(marker_msg):
             rospy.loginfo("AR marker detected!")
             moving = True
 
-            # Use pose of the marker - taken in the camera frame
+            # Use pose of the marker
             gripper_pose_stamped = PoseStamped(
                 pose=marker.pose.pose,
                 header=Header(frame_id=marker.header.frame_id))
 
-            # Transform the pose from head_camera_link to base_link
-            try:
-                pose_in_base_link = listener.transformPose(
-                    'base_link', gripper_pose_stamped)
-            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException) as e:
-                rospy.loginfo(
-                    "Failed to transform pose from head_camera_link to base_link")
-                rospy.logerr(e)
-                continue
+            # Create move group interface for a fetch robot
+            move_group = MoveGroupInterface(
+                "arm_with_torso", "base_link")
+
+            # Initialize PlanningScene
+            planning_scene = PlanningSceneInterface("base_link")
 
             # Move the robot arm to the target pose
-            rospy.loginfo("Moving arm to target pose...")
-            move_group.moveToPose(pose_in_base_link, "wrist_roll_link")
+            move_group.moveToPose(gripper_pose_stamped, "wrist_roll_link")
             result = move_group.get_move_action().get_result()
 
             if result:
@@ -89,6 +68,9 @@ def ar_marker_callback(marker_msg):
             else:
                 rospy.logerr("MoveIt failure no result returned.")
 
+
+# Initialize the ROS node
+rospy.init_node('ar_marker_detector', anonymous=True)
 
 # Subscribe to the 'head_camera/rgb/image_raw' topic
 image_topic = "/head_camera/rgb/image_raw"
