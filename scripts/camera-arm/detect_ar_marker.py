@@ -68,10 +68,13 @@ def ar_marker_callback(marker_msg):
                 pose_in_base_link = listener.transformPose(
                     'base_link', gripper_pose_stamped)
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException) as e:
+                rospy.loginfo(
+                    "Failed to transform pose from head_camera_link to base_link")
                 rospy.logerr(e)
                 continue
 
             # Move the robot arm to the target pose
+            rospy.loginfo("Moving arm to target pose...")
             move_group.moveToPose(pose_in_base_link, "wrist_roll_link")
             result = move_group.get_move_action().get_result()
 
