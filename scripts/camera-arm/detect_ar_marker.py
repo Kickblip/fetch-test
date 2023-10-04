@@ -7,6 +7,7 @@ from std_msgs.msg import Header
 from cv_bridge import CvBridge, CvBridgeError
 from moveit_msgs.msg import MoveItErrorCodes
 from moveit_python import MoveGroupInterface, PlanningSceneInterface
+import tf
 import cv2
 
 # Initialize the CvBridge class
@@ -31,8 +32,24 @@ def image_callback(img_msg):
 # Callback function for AR marker detection
 
 
+# Create move group interface for a fetch robot
+move_group = MoveGroupInterface(
+    "arm_with_torso", "base_link")
+
+# Initialize PlanningScene
+planning_scene = PlanningSceneInterface("base_link")
+
+# Initialize TF listener
+listener = tf.TransformListener()
+
+rospy.sleep(1.0)
+
+
 def ar_marker_callback(marker_msg):
     global moving
+    global move_group
+    global planning_scene
+    global listener
 
     for marker in marker_msg.markers:
 
@@ -41,20 +58,21 @@ def ar_marker_callback(marker_msg):
             rospy.loginfo("AR marker detected!")
             moving = True
 
-            # Use pose of the marker
+            # Use pose of the marker - taken in the camera frame
             gripper_pose_stamped = PoseStamped(
                 pose=marker.pose.pose,
                 header=Header(frame_id=marker.header.frame_id))
 
-            # Create move group interface for a fetch robot
-            move_group = MoveGroupInterface(
-                "arm_with_torso", "head_camera_link")
-
-            # Initialize PlanningScene
-            planning_scene = PlanningSceneInterface("head_camera_link")
+            # Transform the pose from head_camera_link to base_link
+            try:
+                pose_in_base_link = listener.transformPose(
+                    'base_link', gripper_pose_stamped)
+            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException) as e:
+                rospy.logerr(e)
+                continue
 
             # Move the robot arm to the target pose
-            move_group.moveToPose(gripper_pose_stamped, "wrist_roll_link")
+            move_group.moveToPose(pose_in_base_link, "wrist_roll_link")
             result = move_group.get_move_action().get_result()
 
             if result:
