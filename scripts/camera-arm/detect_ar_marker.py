@@ -37,17 +37,21 @@ def ar_marker_callback(marker_msg):
     for marker in marker_msg.markers:
 
         if (marker.id == 14) and (not moving):
+
+            rospy.logininfo("AR marker detected!")
             moving = True
+
+            # Use pose of the marker
             gripper_pose_stamped = PoseStamped(
-                pose=Pose(position=Point(x=0.35, y=0.25, z=0.65),
-                          orientation=Quaternion(x=0.1, y=0.0, z=0.0, w=1.0)),
-                header=Header(frame_id='base_link'))
+                pose=marker.pose.pose,
+                header=Header(frame_id=marker.header.frame_id))
 
             # Create move group interface for a fetch robot
-            move_group = MoveGroupInterface("arm_with_torso", "base_link")
+            move_group = MoveGroupInterface(
+                "arm_with_torso", "head_camera_link")
 
             # Initialize PlanningScene
-            planning_scene = PlanningSceneInterface("base_link")
+            planning_scene = PlanningSceneInterface("head_camera_link")
 
             # Move the robot arm to the target pose
             move_group.moveToPose(gripper_pose_stamped, "wrist_roll_link")
@@ -62,7 +66,7 @@ def ar_marker_callback(marker_msg):
                                  move_group.get_move_action().get_state())
                     moving = False
             else:
-                rospy.logerr("MoveIt! failure no result returned.")
+                rospy.logerr("MoveIt failure no result returned.")
                 moving = False
 
 
