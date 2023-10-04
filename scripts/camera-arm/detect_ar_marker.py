@@ -39,7 +39,7 @@ def ar_marker_callback(marker_msg):
 
         if (marker.id == 14) and (not moving):
 
-            rospy.logininfo("AR marker detected!")
+            rospy.loginfo("AR marker detected!")
             moving = True
 
             # Use pose of the marker
