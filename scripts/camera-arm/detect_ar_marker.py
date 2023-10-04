@@ -13,6 +13,10 @@ import cv2
 # Initialize the CvBridge class
 bridge = CvBridge()
 moving = False
+
+# Initialize the ROS node
+rospy.init_node('ar_marker_detector', anonymous=True)
+
 # Callback function for the subscribed topic
 
 
@@ -28,8 +32,6 @@ def image_callback(img_msg):
     # Display the OpenCV image
     cv2.imshow("Image Window", cv_image)
     cv2.waitKey(3)
-
-# Callback function for AR marker detection
 
 
 # Create move group interface for a fetch robot
@@ -84,9 +86,6 @@ def ar_marker_callback(marker_msg):
             else:
                 rospy.logerr("MoveIt failure no result returned.")
 
-
-# Initialize the ROS node
-rospy.init_node('ar_marker_detector', anonymous=True)
 
 # Subscribe to the 'head_camera/rgb/image_raw' topic
 image_topic = "/head_camera/rgb/image_raw"
