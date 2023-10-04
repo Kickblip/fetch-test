@@ -42,8 +42,6 @@ planning_scene = PlanningSceneInterface("base_link")
 # Initialize TF listener
 listener = tf.TransformListener()
 
-rospy.sleep(1.0)
-
 
 def ar_marker_callback(marker_msg):
     global moving
