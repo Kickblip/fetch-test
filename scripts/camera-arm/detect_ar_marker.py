@@ -17,8 +17,8 @@ moving = False
 rospy.init_node('ar_marker_detector', anonymous=True)
 
 # Initialize move_group interface
-move_group = MoveGroupInterface("arm", "base_link")
-planning_scene = PlanningSceneInterface("base_link")
+move_group = MoveGroupInterface("arm_with_torso", "head_camera_link")
+planning_scene = PlanningSceneInterface("head_camera_link")
 
 # Callback function for the subscribed topic
 
