@@ -43,7 +43,7 @@ def ar_marker_callback(marker_msg):
     global moving
 
     for marker in marker_msg.markers:
-        if (marker.id == 14) and (not moving):
+        if (marker.id == 9) and (not moving):
             rospy.loginfo("AR marker detected!")
             moving = True
 
