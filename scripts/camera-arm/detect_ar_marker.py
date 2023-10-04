@@ -13,6 +13,13 @@ import cv2
 bridge = CvBridge()
 moving = False
 
+# Initialize the ROS node
+rospy.init_node('ar_marker_detector', anonymous=True)
+
+# Initialize move_group interface
+move_group = MoveGroupInterface("arm_with_torso", "base_link")
+planning_scene = PlanningSceneInterface("base_link")
+
 # Callback function for the subscribed topic
 
 
@@ -49,9 +56,8 @@ def ar_marker_callback(marker_msg):
 
 
 def move_robot(target_pose):
-    # Initialize move_group interface
-    move_group = MoveGroupInterface("arm_with_torso", "base_link")
-    planning_scene = PlanningSceneInterface("base_link")
+    global move_group
+    global planning_scene
 
     # Go to the target pose
     result = move_group.moveToPose(target_pose, "gripper_link")
@@ -65,9 +71,6 @@ def move_robot(target_pose):
 
     move_group.get_move_action().cancel_all_goals()
 
-
-# Initialize the ROS node
-rospy.init_node('ar_marker_detector', anonymous=True)
 
 # Subscribe to the 'head_camera/rgb/image_raw' topic
 image_topic = "/head_camera/rgb/image_raw"
