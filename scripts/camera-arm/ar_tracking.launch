@@ -5,7 +5,7 @@
 
     <arg name="cam_image_topic"      default="/head_camera/rgb/image_raw" />
     <arg name="cam_info_topic"       default="/head_camera/rgb/camera_info" />
-    <arg name="output_frame"         default="head_camera_link" />
+    <arg name="output_frame"         default="base_link" />
 
     <node name="ar_track_alvar" pkg="ar_track_alvar" type="individualMarkersNoKinect" respawn="false" output="screen">
 		<param name="marker_size"           type="double" value="$(arg marker_size)" />
