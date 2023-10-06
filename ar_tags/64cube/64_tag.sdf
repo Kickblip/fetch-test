@@ -13,6 +13,16 @@
           </mesh>
         </geometry>
       </visual>
+      <collision name='collision'>
+        <laser_retro>0</laser_retro>
+        <max_contacts>10</max_contacts>
+        <geometry>
+          <mesh>
+            <uri>model://64cube/64_tag.dae</uri>
+            <scale>1 1 1</scale>
+          </mesh>
+        </geometry>
+      </collision>
     </link>
 
   </model>
