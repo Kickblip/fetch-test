@@ -4,6 +4,13 @@ import rospy
 import actionlib
 from control_msgs.msg import FollowJointTrajectoryAction, FollowJointTrajectoryGoal, PointHeadAction, PointHeadGoal
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
+from sensor_msgs.msg import Image
+from ar_track_alvar_msgs.msg import AlvarMarkers
+from cv_bridge import CvBridge
+import cv2
+
+
+bridge = CvBridge()
 
 # Send a trajectory to controller
 
@@ -50,8 +57,23 @@ class PointHeadClient(object):
         self.client.wait_for_result()
 
 
+def image_callback(img_msg):
+    try:
+        cv_image = bridge.imgmsg_to_cv2(img_msg, "bgr8")
+        cv2.imshow("Image Window", cv_image)
+        cv2.waitKey(3)
+    except CvBridgeError as e:
+        print(e)
+        return
+
+
+def ar_marker_callback(marker_msg):
+    for marker in marker_msg.markers:
+        rospy.loginfo("AR marker detected with ID: %d!" % marker.id)
+
+
 if __name__ == "__main__":
-    rospy.init_node("torso_and_head_control")
+    rospy.init_node("pick_and_place_demo")
 
     # Make sure sim time is working
     while not rospy.Time.now():
@@ -70,4 +92,13 @@ if __name__ == "__main__":
     rospy.loginfo("Lowering head...")
     head_action.look_at(1.0, 0.0, -0.5, "base_link")
 
-    rospy.loginfo("Done!")
+    # Subscribe to the AR marker detection and camera topics
+    image_topic = "/head_camera/rgb/image_raw"
+    rospy.Subscriber(image_topic, Image, image_callback)
+
+    ar_marker_topic = "/ar_pose_marker"
+    rospy.Subscriber(ar_marker_topic, AlvarMarkers, ar_marker_callback)
+
+    rospy.spin()
+
+    cv2.destroyAllWindows()
