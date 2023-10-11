@@ -1,39 +1,73 @@
 #!/usr/bin/env python
 
 import rospy
-from moveit_msgs.msg import MoveItErrorCodes
-from moveit_python import MoveGroupInterface, PlanningSceneInterface
+import actionlib
+from control_msgs.msg import FollowJointTrajectoryAction, FollowJointTrajectoryGoal, PointHeadAction, PointHeadGoal
+from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
+
+# Send a trajectory to controller
 
 
-rospy.init_node('torso_head_mover', anonymous=True)
+class FollowTrajectoryClient(object):
+    def __init__(self, name, joint_names):
+        self.client = actionlib.SimpleActionClient(
+            "%s/follow_joint_trajectory" % name, FollowJointTrajectoryAction)
+        rospy.loginfo("Waiting for %s..." % name)
+        self.client.wait_for_server()
+        self.joint_names = joint_names
+
+    def move_to(self, positions, duration=5.0):
+        trajectory = JointTrajectory()
+        trajectory.joint_names = self.joint_names
+        trajectory.points.append(JointTrajectoryPoint())
+        trajectory.points[0].positions = positions
+        trajectory.points[0].time_from_start = rospy.Duration(duration)
+        follow_goal = FollowJointTrajectoryGoal()
+        follow_goal.trajectory = trajectory
+
+        self.client.send_goal(follow_goal)
+        self.client.wait_for_result()
+
+# Point the head using controller
 
 
-move_group = MoveGroupInterface("torso_and_head", "base_link")
-planning_scene = PlanningSceneInterface("base_link")
+class PointHeadClient(object):
+    def __init__(self):
+        self.client = actionlib.SimpleActionClient(
+            "head_controller/point_head", PointHeadAction)
+        rospy.loginfo("Waiting for head_controller...")
+        self.client.wait_for_server()
+
+    def look_at(self, x, y, z, frame, duration=1.0):
+        goal = PointHeadGoal()
+        goal.target.header.stamp = rospy.Time.now()
+        goal.target.header.frame_id = frame
+        goal.target.point.x = x
+        goal.target.point.y = y
+        goal.target.point.z = z
+        goal.min_duration = rospy.Duration(duration)
+        self.client.send_goal(goal)
+        self.client.wait_for_result()
 
 
-def move_robot():
+if __name__ == "__main__":
+    rospy.init_node("torso_and_head_control")
 
-    joints = ["torso_lift_joint", "head_tilt_joint"]
+    # Make sure sim time is working
+    while not rospy.Time.now():
+        pass
 
-    joint_values = [0.3, -0.5]
+    # Setup clients
+    torso_action = FollowTrajectoryClient(
+        "torso_controller", ["torso_lift_joint"])
+    head_action = PointHeadClient()
 
-    move_group.moveToJointPosition(joints, joint_values, wait=True)
+    # Raise the torso
+    rospy.loginfo("Raising torso...")
+    torso_action.move_to([0.4, ])
 
-    result = move_group.get_move_action().get_result()
-    if result:
-        if result.error_code.val == MoveItErrorCodes.SUCCESS:
-            rospy.loginfo("Robot moved to target joint values!")
-        else:
-            rospy.logwarn("Failed to move to target joint values!")
-    else:
-        rospy.logwarn("MoveIt! did not return any result.")
+    # Lower the head
+    rospy.loginfo("Lowering head...")
+    head_action.look_at(1.0, 0.0, -0.5, "base_link")
 
-    move_group.get_move_action().cancel_all_goals()
-
-
-rospy.sleep(1)
-
-move_robot()
-
-rospy.spin()
+    rospy.loginfo("Done!")
