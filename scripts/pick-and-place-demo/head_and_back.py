@@ -9,12 +9,15 @@ from ar_track_alvar_msgs.msg import AlvarMarkers
 from cv_bridge import CvBridge, CvBridgeError
 from moveit_msgs.msg import MoveItErrorCodes
 from moveit_python import MoveGroupInterface, PlanningSceneInterface
+from geometry_msgs.msg import PoseStamped
+from std_msgs.msg import Header
 import cv2
 
 
 rospy.init_node("pick_and_place_demo")
 
 bridge = CvBridge()
+moving = False
 
 # Initialize move_group interface
 move_group = MoveGroupInterface("arm_with_torso", "base_link")
@@ -61,9 +64,11 @@ class PointHeadClient(object):
         self.client.wait_for_result()
 
 
-def get_grasp_pose_from_ar_marker(marker_pose):
-    # returns pose for now
-    return marker_pose.pose
+def get_grasp_pose_from_ar_marker(marker):
+    grasp_pose = PoseStamped(
+        pose=marker.pose.pose,
+        header=Header(frame_id=marker.header.frame_id))
+    return grasp_pose
 
 
 def move_robot(target_pose):
@@ -94,10 +99,14 @@ def image_callback(img_msg):
 
 
 def ar_marker_callback(marker_msg):
+    global moving
+
     for marker in marker_msg.markers:
-        rospy.loginfo("AR marker detected with ID: %d!" % marker.id)
-        grasp_pose = get_grasp_pose_from_ar_marker(marker)
-        move_robot(grasp_pose)
+        if (not moving):
+            moving = True
+            rospy.loginfo("AR marker detected with ID: %d!" % marker.id)
+            grasp_pose = get_grasp_pose_from_ar_marker(marker)
+            move_robot(grasp_pose)
 
 
 if __name__ == "__main__":
