@@ -8,10 +8,15 @@ from sensor_msgs.msg import Image
 from ar_track_alvar_msgs.msg import AlvarMarkers
 from cv_bridge import CvBridge, CvBridgeError
 from moveit_msgs.msg import MoveItErrorCodes
+from moveit_python import MoveGroupInterface, PlanningSceneInterface
 import cv2
 
 
 bridge = CvBridge()
+
+# Initialize move_group interface
+move_group = MoveGroupInterface("arm_with_torso", "base_link")
+planning_scene = PlanningSceneInterface("base_link")
 
 
 class FollowTrajectoryClient(object):
