@@ -12,6 +12,8 @@ from moveit_python import MoveGroupInterface, PlanningSceneInterface
 import cv2
 
 
+rospy.init_node("pick_and_place_demo")
+
 bridge = CvBridge()
 
 # Initialize move_group interface
@@ -99,7 +101,6 @@ def ar_marker_callback(marker_msg):
 
 
 if __name__ == "__main__":
-    rospy.init_node("pick_and_place_demo")
 
     # Make sure sim time is working
     while not rospy.Time.now():
