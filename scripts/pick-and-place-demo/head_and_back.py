@@ -87,7 +87,7 @@ def move_robot(target_pose):
     wrist_pose = [1.66, 0.0]
     # Go to the target pose
     result = move_group.moveToPose(target_pose, "wrist_roll_link")
-    result = move_group.moveToJointPosition(wrist_joints, wrist_pose, 0.02)
+    # result = move_group.moveToJointPosition(wrist_joints, wrist_pose, 0.02)
 
     if result:
         if result.error_code.val == MoveItErrorCodes.SUCCESS:
