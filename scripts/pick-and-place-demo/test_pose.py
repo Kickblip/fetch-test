@@ -13,7 +13,7 @@ def move_robot():
     joints = ["shoulder_pan_joint", "shoulder_lift_joint", "upperarm_roll_joint",
               "elbow_flex_joint", "forearm_roll_joint", "wrist_flex_joint", "wrist_roll_joint"]
 
-    pose = [1.0, 1.2, 0.0, 1.0, 0.0, 1.6, 0.0]
+    pose = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
     move_group.moveToJointPosition(joints, pose, 0.02)
 
