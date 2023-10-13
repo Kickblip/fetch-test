@@ -6,13 +6,12 @@ from control_msgs.msg import FollowJointTrajectoryAction, FollowJointTrajectoryG
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from sensor_msgs.msg import Image
 from ar_track_alvar_msgs.msg import AlvarMarkers
-from cv_bridge import CvBridge
+from cv_bridge import CvBridge, CvBridgeError
+from moveit_msgs.msg import MoveItErrorCodes
 import cv2
 
 
 bridge = CvBridge()
-
-# Send a trajectory to controller
 
 
 class FollowTrajectoryClient(object):
@@ -35,8 +34,6 @@ class FollowTrajectoryClient(object):
         self.client.send_goal(follow_goal)
         self.client.wait_for_result()
 
-# Point the head using controller
-
 
 class PointHeadClient(object):
     def __init__(self):
@@ -57,6 +54,28 @@ class PointHeadClient(object):
         self.client.wait_for_result()
 
 
+def get_grasp_pose_from_ar_marker(marker_pose):
+    # returns pose for now
+    return marker_pose.pose
+
+
+def move_robot(target_pose):
+    global move_group
+    global planning_scene
+
+    # Go to the target pose
+    result = move_group.moveToPose(target_pose, "gripper_link")
+    if result:
+        if result.error_code.val == MoveItErrorCodes.SUCCESS:
+            rospy.loginfo("Robot moved to target pose!")
+        else:
+            rospy.logwarn("Failed to move to target pose!")
+    else:
+        rospy.logwarn("MoveIt! did not return any result.")
+
+    move_group.get_move_action().cancel_all_goals()
+
+
 def image_callback(img_msg):
     try:
         cv_image = bridge.imgmsg_to_cv2(img_msg, "bgr8")
@@ -70,6 +89,8 @@ def image_callback(img_msg):
 def ar_marker_callback(marker_msg):
     for marker in marker_msg.markers:
         rospy.loginfo("AR marker detected with ID: %d!" % marker.id)
+        grasp_pose = get_grasp_pose_from_ar_marker(marker)
+        move_robot(grasp_pose)
 
 
 if __name__ == "__main__":
