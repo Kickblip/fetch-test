@@ -69,6 +69,8 @@ def get_grasp_pose_from_ar_marker(marker):
         pose=marker.pose.pose,
         header=Header(frame_id=marker.header.frame_id))
 
+    rospy.loginfo("AR marker pose: %s" % grasp_pose)
+
     # offset_z = 0.1
     # grasp_pose.pose.position.z += offset_z
 
@@ -80,7 +82,8 @@ def move_robot(target_pose):
     global planning_scene
 
     # Go to the target pose
-    result = move_group.moveToPose(target_pose, "wrist_roll_link")
+    # result = move_group.moveToPose(target_pose, "wrist_roll_link")
+    result = move_group.moveToPose(target_pose, "gripper_link")
 
     if result:
         if result.error_code.val == MoveItErrorCodes.SUCCESS:
