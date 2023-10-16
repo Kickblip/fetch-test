@@ -71,8 +71,8 @@ def get_grasp_pose_from_ar_marker(marker):
 
     rospy.loginfo("AR marker pose: %s" % grasp_pose)
 
-    # offset_z = 0.1
-    # grasp_pose.pose.position.z += offset_z
+    offset_z = 0.1
+    grasp_pose.pose.position.z += offset_z
 
     return grasp_pose
 
@@ -80,6 +80,9 @@ def get_grasp_pose_from_ar_marker(marker):
 def move_robot(target_pose):
     global move_group
     global planning_scene
+
+    # Move the arm out in front of the robot
+    move_group.moveToJointPosition("shoulder_pan_joint", 0.0, 0.02)
 
     # Go to the target pose
     # result = move_group.moveToPose(target_pose, "wrist_roll_link")
