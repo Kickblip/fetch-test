@@ -82,7 +82,11 @@ def move_robot(target_pose):
     global planning_scene
 
     # Move the arm out in front of the robot
-    move_group.moveToJointPosition("shoulder_pan_joint", 0.0, 0.02)
+    joints = ["shoulder_pan_joint"]
+
+    pose = [0.0]
+
+    move_group.moveToJointPosition(joints, pose, 0.02)
 
     # Go to the target pose
     # result = move_group.moveToPose(target_pose, "wrist_roll_link")
