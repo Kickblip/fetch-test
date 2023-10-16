@@ -89,7 +89,8 @@ def move_robot(target_pose):
         if result.error_code.val == MoveItErrorCodes.SUCCESS:
             rospy.loginfo("Robot moved to target pose!")
         else:
-            rospy.logwarn("Failed to move to target pose!")
+            rospy.logwarn(
+                "Failed to move to target pose! Error code: %s", result.error_code.val)
     else:
         rospy.logwarn("MoveIt! did not return any result.")
 
