@@ -2,38 +2,42 @@
 
 import rospy
 from geometry_msgs.msg import Twist
+import time
 
 
-def turn_180_degrees():
+def rotate_180_degrees():
     # Initialize the node
-    rospy.init_node('direct_turn_180_degrees', anonymous=True)
+    rospy.init_node('rotate_180_degrees', anonymous=True)
 
-    # Create a publisher for the base_controller/command topic
-    pub = rospy.Publisher('base_controller/command', Twist, queue_size=10)
+    # Create a publisher to the cmd_vel topic
+    pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
 
-    # Create a Twist message and set linear.x = 0 since we're only turning
-    twist = Twist()
-    twist.linear.x = 0.0
+    # Give it a moment to initialize
+    rospy.sleep(1)
 
-    # Set the angular.z velocity for turning
-    turning_velocity = 1.0  # rad/s
-    twist.angular.z = turning_velocity
+    # Create a Twist message
+    rotate_cmd = Twist()
 
-    # Calculate the time to turn 180 degrees
-    turn_duration = 3.14159 / turning_velocity  # pi radians is 180 degrees
+    # Set the angular velocity to a value that will rotate the robot. Adjust this value based on your robot's capabilities
+    # For example, rotate at 1 rad/s. Adjust this value as needed
+    rotate_cmd.angular.z = 1.0
 
-    # Start turning
-    start_time = rospy.Time.now()
-    while rospy.Time.now() - start_time < rospy.Duration(turn_duration) and not rospy.is_shutdown():
-        pub.publish(twist)
+    # Compute the rotation time for 180 degrees based on the given angular velocity
+    rotation_time = 3.14 / rotate_cmd.angular.z
 
-    # Stop the robot after turning
-    twist.angular.z = 0.0
-    pub.publish(twist)
+    # Publish the rotation command
+    pub.publish(rotate_cmd)
+
+    # Wait for the rotation to complete
+    time.sleep(rotation_time)
+
+    # Stop the robot by publishing a zero Twist message
+    stop_cmd = Twist()
+    pub.publish(stop_cmd)
 
 
 if __name__ == '__main__':
     try:
-        turn_180_degrees()
+        rotate_180_degrees()
     except rospy.ROSInterruptException:
         pass
