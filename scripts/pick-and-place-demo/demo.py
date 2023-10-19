@@ -28,7 +28,7 @@ class MoveBaseClient(object):
         rospy.loginfo("Waiting for move_base...")
         self.client.wait_for_server()
 
-    def goto(self, x, y, theta, frame="map"):
+    def goto(self, x, y, theta, frame="base_link"):
         move_goal = MoveBaseGoal()
         move_goal.target_pose.pose.position.x = x
         move_goal.target_pose.pose.position.y = y
@@ -390,7 +390,7 @@ if __name__ == "__main__":
         pass
 
     # Setup clients
-    # move_base = MoveBaseClient()
+    move_base = MoveBaseClient()
     torso_action = FollowTrajectoryClient(
         "torso_controller", ["torso_lift_joint"])
     head_action = PointHeadClient()
@@ -432,7 +432,7 @@ if __name__ == "__main__":
 
     # # Move to second table
     # rospy.loginfo("Moving to second table...")
-    # move_base.goto(-3.53, 3.75, 1.57)
+    move_base.goto(0, 0, 3.14)
     # move_base.goto(-3.53, 4.15, 1.57)
 
     # # Raise the torso using just a controller
