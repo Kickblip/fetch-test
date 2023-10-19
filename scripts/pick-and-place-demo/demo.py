@@ -1,6 +1,4 @@
-
-# Author: Michael Ferguson
-# Author: Di Sun
+#!/usr/bin/env python
 
 import copy
 import actionlib
@@ -432,26 +430,26 @@ if __name__ == "__main__":
     rospy.loginfo("Lowering torso...")
     torso_action.move_to([0.0, ])
 
-    # Move to second table
-    rospy.loginfo("Moving to second table...")
-    move_base.goto(-3.53, 3.75, 1.57)
-    move_base.goto(-3.53, 4.15, 1.57)
+    # # Move to second table
+    # rospy.loginfo("Moving to second table...")
+    # move_base.goto(-3.53, 3.75, 1.57)
+    # move_base.goto(-3.53, 4.15, 1.57)
 
-    # Raise the torso using just a controller
-    rospy.loginfo("Raising torso...")
-    torso_action.move_to([0.4, ])
+    # # Raise the torso using just a controller
+    # rospy.loginfo("Raising torso...")
+    # torso_action.move_to([0.4, ])
 
-    # Place the block
-    while not rospy.is_shutdown():
-        rospy.loginfo("Placing object...")
-        pose = PoseStamped()
-        pose.pose = cube.primitive_poses[0]
-        pose.pose.position.z += 0.05
-        pose.header.frame_id = cube.header.frame_id
-        if grasping_client.place(cube, pose):
-            break
-        rospy.logwarn("Placing failed.")
+    # # Place the block
+    # while not rospy.is_shutdown():
+    #     rospy.loginfo("Placing object...")
+    #     pose = PoseStamped()
+    #     pose.pose = cube.primitive_poses[0]
+    #     pose.pose.position.z += 0.05
+    #     pose.header.frame_id = cube.header.frame_id
+    #     if grasping_client.place(cube, pose):
+    #         break
+    #     rospy.logwarn("Placing failed.")
 
-    # Tuck the arm, lower the torso
-    grasping_client.tuck()
-    torso_action.move_to([0.0, ])
+    # # Tuck the arm, lower the torso
+    # grasping_client.tuck()
+    # torso_action.move_to([0.0, ])
