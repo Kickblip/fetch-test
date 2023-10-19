@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 
+import copy
+import actionlib
 import rospy
 from moveit_msgs.msg import MoveItErrorCodes
 from moveit_python import MoveGroupInterface, PlanningSceneInterface
+from control_msgs.msg import PointHeadAction, PointHeadGoal
 
 
 class PointHeadClient(object):
