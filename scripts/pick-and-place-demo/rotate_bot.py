@@ -15,13 +15,17 @@ def rotate_180_degrees():
     rate = rospy.Rate(10)
     end_time = rospy.Time.now() + rospy.Duration(rotation_duration)
 
+    print("Starting rotation...")  # Debugging statement
+
     while not rospy.is_shutdown() and rospy.Time.now() < end_time:
         twist_msg = Twist()
         twist_msg.angular.z = 3.14
         pub.publish(twist_msg)
+        print("Publishing rotation command...")  # Debugging statement
         rate.sleep()
 
     # Stop the robot after rotation
+    print("Stopping rotation...")  # Debugging statement
     pub.publish(Twist())
 
 
@@ -29,4 +33,4 @@ if __name__ == '__main__':
     try:
         rotate_180_degrees()
     except rospy.ROSInterruptException:
-        pass
+        print("Rotation interrupted.")  # Debugging statement
