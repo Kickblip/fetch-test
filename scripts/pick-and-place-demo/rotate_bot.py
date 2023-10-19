@@ -1,45 +1,40 @@
 #!/usr/bin/env python
 
-import copy
-import actionlib
 import rospy
-
-from math import sin, cos
-from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
+from geometry_msgs.msg import Twist
 
 
-class MoveBaseClient(object):
+def turn_180_degrees():
+    # Initialize the node
+    rospy.init_node('turn_180_degrees', anonymous=True)
 
-    def __init__(self):
-        self.client = actionlib.SimpleActionClient("move_base", MoveBaseAction)
-        # rospy.loginfo("Waiting for move_base...")
-        # self.client.wait_for_server()
+    # Create a publisher for the cmd_vel topic
+    pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
 
-    def goto(self, x, y, theta, frame="base_link"):
-        move_goal = MoveBaseGoal()
-        move_goal.target_pose.pose.position.x = x
-        move_goal.target_pose.pose.position.y = y
-        move_goal.target_pose.pose.orientation.z = sin(theta/2.0)
-        move_goal.target_pose.pose.orientation.w = cos(theta/2.0)
-        move_goal.target_pose.header.frame_id = frame
-        move_goal.target_pose.header.stamp = rospy.Time.now()
+    # Create a Twist message and set linear.x = 0 since we're only turning
+    twist = Twist()
+    twist.linear.x = 0.0
 
-        # TODO wait for things to work
-        self.client.send_goal(move_goal)
-        self.client.wait_for_result()
+    # Set the angular.z velocity for turning
+    # You can change this value based on the robot's turning capabilities
+    turning_velocity = 1.0  # rad/s
+    twist.angular.z = turning_velocity
 
+    # Calculate the time to turn 180 degrees
+    turn_duration = 3.14159 / turning_velocity  # pi radians is 180 degrees
 
-def rotate_180_degrees():
-    move_base.goto(0.0, 0.0, 3.14)
+    # Start turning
+    start_time = rospy.Time.now()
+    while rospy.Time.now() - start_time < rospy.Duration(turn_duration) and not rospy.is_shutdown():
+        pub.publish(twist)
+
+    # Stop the robot after turning
+    twist.angular.z = 0.0
+    pub.publish(twist)
 
 
 if __name__ == '__main__':
-    rospy.init_node("test_arm_poses")
-
-    move_base = MoveBaseClient()
-
-    rospy.sleep(1)
-
-    rotate_180_degrees()
-
-    rospy.spin()
+    try:
+        turn_180_degrees()
+    except rospy.ROSInterruptException:
+        pass
