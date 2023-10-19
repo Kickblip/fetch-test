@@ -29,8 +29,8 @@ def rotate_180_degrees():
     rospy.sleep(rotation_time)
 
     # Stop the robot by publishing a zero Twist message
-    stop_cmd = Twist()
-    pub.publish(stop_cmd)
+    # stop_cmd = Twist()
+    # pub.publish(stop_cmd)
 
 
 if __name__ == '__main__':
