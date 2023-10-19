@@ -71,7 +71,7 @@ def get_grasp_pose_from_ar_marker(marker):
 
     rospy.loginfo("AR marker pose: %s" % grasp_pose)
 
-    offset_z = 0.1
+    offset_z = 0.01
     grasp_pose.pose.position.z += offset_z
 
     return grasp_pose
