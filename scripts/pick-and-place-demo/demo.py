@@ -14,35 +14,9 @@ from control_msgs.msg import FollowJointTrajectoryAction, FollowJointTrajectoryG
 from control_msgs.msg import PointHeadAction, PointHeadGoal
 from grasping_msgs.msg import FindGraspableObjectsAction, FindGraspableObjectsGoal
 from geometry_msgs.msg import PoseStamped
-from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from moveit_msgs.msg import PlaceLocation, MoveItErrorCodes
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from geometry_msgs.msg import Twist
-
-# Move base using navigation stack
-
-
-class MoveBaseClient(object):
-
-    def __init__(self):
-        self.client = actionlib.SimpleActionClient("move_base", MoveBaseAction)
-        rospy.loginfo("Waiting for move_base...")
-        self.client.wait_for_server()
-
-    def goto(self, x, y, theta, frame="base_link"):
-        move_goal = MoveBaseGoal()
-        move_goal.target_pose.pose.position.x = x
-        move_goal.target_pose.pose.position.y = y
-        move_goal.target_pose.pose.orientation.z = sin(theta/2.0)
-        move_goal.target_pose.pose.orientation.w = cos(theta/2.0)
-        move_goal.target_pose.header.frame_id = frame
-        move_goal.target_pose.header.stamp = rospy.Time.now()
-
-        # TODO wait for things to work
-        self.client.send_goal(move_goal)
-        self.client.wait_for_result()
-
-# Send a trajectory to controller
 
 
 class FollowTrajectoryClient(object):
@@ -410,17 +384,10 @@ if __name__ == "__main__":
         pass
 
     # Setup clients
-    # move_base = MoveBaseClient()
     torso_action = FollowTrajectoryClient(
         "torso_controller", ["torso_lift_joint"])
     head_action = PointHeadClient()
     grasping_client = GraspingClient()
-
-    # # Move the base to be in front of the table
-    # # Demonstrates the use of the navigation stack
-    # rospy.loginfo("Moving to table...")
-    # move_base.goto(2.250, 3.118, 0.0)
-    # move_base.goto(2.750, 3.118, 0.0)
 
     # Raise the torso using just a controller
     rospy.loginfo("Raising torso...")
@@ -450,14 +417,10 @@ if __name__ == "__main__":
     rospy.loginfo("Lowering torso...")
     torso_action.move_to([0.0, ])
 
-    # # Move to second table
-    # rospy.loginfo("Moving to second table...")
-    # move_base.goto(0, 0, 3.14)
-    # move_base.goto(-3.53, 4.15, 1.57)
-
+    # Turn the robot around
     rotate_robot(5)
 
-    # # Raise the torso using just a controller
+    # Raise the torso again
     rospy.loginfo("Raising torso...")
     torso_action.move_to([0.4, ])
 
