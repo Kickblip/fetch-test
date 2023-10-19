@@ -19,11 +19,11 @@ def rotate_180_degrees():
     rotate_cmd = Twist()
 
     # Set the angular velocity to a value that will rotate the robot. Adjust this value based on your robot's capabilities
-    # For example, rotate at 1 rad/s. Adjust this value as needed
-    rotate_cmd.angular.z = 1.0
-
     # Compute the rotation time for 180 degrees based on the given angular velocity
     rotation_time = 3.14 / rotate_cmd.angular.z
+
+    # Increase the rotation time by 20% as a correction factor
+    rotation_time *= 1.2
 
     # Publish the rotation command
     pub.publish(rotate_cmd)
