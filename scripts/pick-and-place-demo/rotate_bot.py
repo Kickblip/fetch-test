@@ -5,20 +5,13 @@ from geometry_msgs.msg import Twist
 
 
 def continuous_rotate(duration):
-    # Initialize the node
     rospy.init_node('continuous_rotate', anonymous=True)
 
-    # Create a publisher to the cmd_vel topic
     pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
-
-    # Give it a moment to initialize
     rospy.sleep(1)
 
-    # Create a Twist message
     rotate_cmd = Twist()
 
-    # Set the angular velocity to a value that will rotate the robot. Adjust this value based on your robot's capabilities
-    # For example, rotate at 1 rad/s. Adjust this value as needed.
     rotate_cmd.angular.z = 1.0
 
     # Publish the rotation command for the desired duration

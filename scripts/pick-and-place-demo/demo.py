@@ -17,6 +17,7 @@ from geometry_msgs.msg import PoseStamped
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from moveit_msgs.msg import PlaceLocation, MoveItErrorCodes
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
+from geometry_msgs.msg import Twist
 
 # Move base using navigation stack
 
@@ -381,6 +382,25 @@ class GraspingClient(object):
                 return
 
 
+def rotate_robot(duration):
+    pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
+    rospy.sleep(1)
+
+    rotate_cmd = Twist()
+
+    rotate_cmd.angular.z = 1.0
+
+    # Publish the rotation command for the desired duration
+    end_time = rospy.Time.now() + rospy.Duration(duration)
+    while rospy.Time.now() < end_time:
+        pub.publish(rotate_cmd)
+        rospy.sleep(0.1)
+
+    # Stop the robot by publishing a zero Twist message
+    stop_cmd = Twist()
+    pub.publish(stop_cmd)
+
+
 if __name__ == "__main__":
     # Create a node
     rospy.init_node("demo")
@@ -390,7 +410,7 @@ if __name__ == "__main__":
         pass
 
     # Setup clients
-    move_base = MoveBaseClient()
+    # move_base = MoveBaseClient()
     torso_action = FollowTrajectoryClient(
         "torso_controller", ["torso_lift_joint"])
     head_action = PointHeadClient()
@@ -432,24 +452,26 @@ if __name__ == "__main__":
 
     # # Move to second table
     # rospy.loginfo("Moving to second table...")
-    move_base.goto(0, 0, 3.14)
+    # move_base.goto(0, 0, 3.14)
     # move_base.goto(-3.53, 4.15, 1.57)
 
+    rotate_robot(5)
+
     # # Raise the torso using just a controller
-    # rospy.loginfo("Raising torso...")
-    # torso_action.move_to([0.4, ])
+    rospy.loginfo("Raising torso...")
+    torso_action.move_to([0.4, ])
 
-    # # Place the block
-    # while not rospy.is_shutdown():
-    #     rospy.loginfo("Placing object...")
-    #     pose = PoseStamped()
-    #     pose.pose = cube.primitive_poses[0]
-    #     pose.pose.position.z += 0.05
-    #     pose.header.frame_id = cube.header.frame_id
-    #     if grasping_client.place(cube, pose):
-    #         break
-    #     rospy.logwarn("Placing failed.")
+    # Place the block
+    while not rospy.is_shutdown():
+        rospy.loginfo("Placing object...")
+        pose = PoseStamped()
+        pose.pose = cube.primitive_poses[0]
+        pose.pose.position.z += 0.05
+        pose.header.frame_id = cube.header.frame_id
+        if grasping_client.place(cube, pose):
+            break
+        rospy.logwarn("Placing failed.")
 
-    # # Tuck the arm, lower the torso
-    # grasping_client.tuck()
-    # torso_action.move_to([0.0, ])
+    # Tuck the arm, lower the torso
+    grasping_client.tuck()
+    torso_action.move_to([0.0, ])
