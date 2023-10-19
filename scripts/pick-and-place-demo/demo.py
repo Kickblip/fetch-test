@@ -390,7 +390,7 @@ if __name__ == "__main__":
         pass
 
     # Setup clients
-    move_base = MoveBaseClient()
+    # move_base = MoveBaseClient()
     torso_action = FollowTrajectoryClient(
         "torso_controller", ["torso_lift_joint"])
     head_action = PointHeadClient()
