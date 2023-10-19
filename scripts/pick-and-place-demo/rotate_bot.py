@@ -1,43 +1,45 @@
-#!/usr/bin/env python
-
 import rospy
 from geometry_msgs.msg import Twist
-import time
+from nav_msgs.msg import Odometry
+from tf.transformations import euler_from_quaternion
 
 
-def rotate_180_degrees():
-    # Initialize the node
-    rospy.init_node('rotate_180_degrees', anonymous=True)
+class RotateRobot:
 
-    # Create a publisher to the cmd_vel topic
-    pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
+    def __init__(self):
+        rospy.init_node('rotate_180_degrees', anonymous=True)
+        self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
+        self.odom_sub = rospy.Subscriber('/odom', Odometry, self.odom_callback)
+        self.current_yaw = 0.0
+        self.start_yaw = None
 
-    # Give it a moment to initialize
-    rospy.sleep(1)
+    def odom_callback(self, msg):
+        orientation_q = msg.pose.pose.orientation
+        _, _, self.current_yaw = euler_from_quaternion(
+            [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w])
 
-    # Create a Twist message
-    rotate_cmd = Twist()
+    def rotate_180_degrees(self):
+        rospy.sleep(1)  # Give subscribers time to get initial data
+        self.start_yaw = self.current_yaw
 
-    # Set the angular velocity to a value that will rotate the robot. Adjust this value based on your robot's capabilities
-    # Compute the rotation time for 180 degrees based on the given angular velocity
-    rotation_time = 3.14 / rotate_cmd.angular.z
+        rotate_cmd = Twist()
+        rotate_cmd.angular.z = 1.0
 
-    # Increase the rotation time by 20% as a correction factor
-    rotation_time *= 1.2
+        while not rospy.is_shutdown():
+            delta_yaw = abs(self.current_yaw - self.start_yaw)
+            if delta_yaw >= 3.14:  # If rotation is roughly 180 degrees or more
+                break
+            self.pub.publish(rotate_cmd)
+            rospy.sleep(0.01)
 
-    # Publish the rotation command
-    pub.publish(rotate_cmd)
-
-    # Wait for the rotation to complete
-    time.sleep(rotation_time)
-
-    # Stop the robot by publishing a zero Twist message
-    stop_cmd = Twist()
-    pub.publish(stop_cmd)
+        # Stop the robot
+        stop_cmd = Twist()
+        self.pub.publish(stop_cmd)
 
 
 if __name__ == '__main__':
     try:
-        rotate_180_degrees()
+        robot = RotateRobot()
+        robot.rotate_180_degrees()
     except rospy.ROSInterruptException:
         pass
