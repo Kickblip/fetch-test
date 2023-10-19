@@ -1,6 +1,6 @@
 <launch>
   <node name="basic_grasping_perception" pkg="simple_grasping" type="basic_grasping_perception" >
-    <rosparam command="load" file="$(find fetch_gazebo_demo)/scripts/pick-and-place-demo/simple_grasping.yaml" />
+    <rosparam command="load" file="$(find fetch_test)/scripts/pick-and-place-demo/simple_grasping.yaml" />
   </node>
 
 </launch>
