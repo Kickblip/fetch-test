@@ -427,7 +427,7 @@ if __name__ == "__main__":
     torso_action.move_to([0.4, ])
 
     # Point the head at the cube we want to pick
-    head_action.look_at(1.0, 0.0, 0.9, "base_link")
+    head_action.look_at(1.0, 0.0, 0.5, "base_link")
 
     # Get block to pick
     while not rospy.is_shutdown():
