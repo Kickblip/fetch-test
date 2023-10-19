@@ -6,17 +6,16 @@ from geometry_msgs.msg import Twist
 
 def turn_180_degrees():
     # Initialize the node
-    rospy.init_node('turn_180_degrees', anonymous=True)
+    rospy.init_node('direct_turn_180_degrees', anonymous=True)
 
-    # Create a publisher for the cmd_vel topic
-    pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
+    # Create a publisher for the base_controller/command topic
+    pub = rospy.Publisher('base_controller/command', Twist, queue_size=10)
 
     # Create a Twist message and set linear.x = 0 since we're only turning
     twist = Twist()
     twist.linear.x = 0.0
 
     # Set the angular.z velocity for turning
-    # You can change this value based on the robot's turning capabilities
     turning_velocity = 1.0  # rad/s
     twist.angular.z = turning_velocity
 
