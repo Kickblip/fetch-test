@@ -18,6 +18,8 @@ from moveit_msgs.msg import PlaceLocation, MoveItErrorCodes
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from geometry_msgs.msg import Twist
 
+# Controlling the joints
+
 
 class FollowTrajectoryClient(object):
 
